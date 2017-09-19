@@ -327,8 +327,6 @@ you should place your code here."
   (setq-default js2-basic-offset 2)
   (global-centered-cursor-mode +1)
   (setq ccm-recenter-at-end-of-file nil)
-  (evil-leader/set-key
-    "q q" 'spacemacs/frame-killer)
   (setq-default dotspacemacs-configuration-layers
                 '((org :variables org-projectile-projects-file "~/TODOs.org")))
   (with-eval-after-load 'org-agenda
