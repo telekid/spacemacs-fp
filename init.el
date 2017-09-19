@@ -329,6 +329,11 @@ you should place your code here."
   (setq ccm-recenter-at-end-of-file nil)
   (evil-leader/set-key
     "q q" 'spacemacs/frame-killer)
+  (setq-default dotspacemacs-configuration-layers
+                '((org :variables org-projectile-projects-file "~/TODOs.org")))
+  (with-eval-after-load 'org-agenda
+    (require 'org-projectile)
+    (setq org-agenda-files (append org-agenda-files (org-projectile:todo-files))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
