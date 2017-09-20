@@ -52,7 +52,7 @@ values."
      react
      html
      ;; markdown
-     org
+     (org :variables org-projectile-projects-file "~/TODOs.org")
      clojure
      (shell :variables
              shell-default-height 30
@@ -327,11 +327,9 @@ you should place your code here."
   (setq-default js2-basic-offset 2)
   (global-centered-cursor-mode +1)
   (setq ccm-recenter-at-end-of-file nil)
-  (setq-default dotspacemacs-configuration-layers
-                '((org :variables org-projectile-projects-file "~/TODOs.org")))
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
-    (setq org-agenda-files (append org-agenda-files (org-projectile:todo-files))))
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
   )
 
 ;; Do not write anything past this comment. This is where Emacs will
