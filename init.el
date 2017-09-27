@@ -31,6 +31,8 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     (plantuml :variables
+               plantuml-jar-path "~/org/plantuml.jar")
      haskell
      rust
      swift
@@ -333,6 +335,9 @@ you should place your code here."
     (setq org-directory "~/org")
     (setq org-default-notes-file (concat org-directory "/capture.org"))
     (setq org-agenda-files (list org-default-notes-file)))
+
+  ;; (with-eval-after-load 'org
+  ;;   (setq plantuml-jar-path (concat org-directory "/plantuml.jar")))
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
