@@ -52,7 +52,7 @@ values."
      react
      html
      ;; markdown
-     org
+     (org :variables org-projectile-file "TODOs.org")
      clojure
      (shell :variables
              shell-default-height 30
@@ -328,7 +328,14 @@ you should place your code here."
   (setq-default js2-basic-offset 2)
   (global-centered-cursor-mode +1)
   (setq ccm-recenter-at-end-of-file nil)
+
   (with-eval-after-load 'org
     (setq org-directory "~/org")
     (setq org-default-notes-file (concat org-directory "/capture.org"))
-    (setq org-agenda-files (list org-default-notes-file))))
+    (setq org-agenda-files (list org-default-notes-file)))
+
+  (with-eval-after-load 'org-agenda
+    (require 'org-projectile)
+    (setq org-agenda-files (append org-agenda-files (org-projectile-todo-files))))
+
+  )
