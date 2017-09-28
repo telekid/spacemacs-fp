@@ -54,7 +54,7 @@ values."
      react
      html
      ;; markdown
-     (org :variables org-projectile-file "TODOs.org")
+     (org :variables org-projectile-file "notes.org")
      clojure
      (shell :variables
              shell-default-height 30
