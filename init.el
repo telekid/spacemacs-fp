@@ -335,7 +335,8 @@ you should place your code here."
   (with-eval-after-load 'org
     (setq org-directory "~/org")
     (setq org-default-notes-file (concat org-directory "/capture.org"))
-    (setq org-agenda-files (list org-default-notes-file)))
+    (setq org-agenda-files (list org-default-notes-file))
+    (setq spaceline-org-clock-p t))
 
   ;; (with-eval-after-load 'org
   ;;   (setq plantuml-jar-path (concat org-directory "/plantuml.jar")))
