@@ -328,6 +328,7 @@ you should place your code here."
   (push '("\\.js\\'" . react-mode) auto-mode-alist)
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
+  (setq spaceline-org-clock-p t)
   (global-centered-cursor-mode +1)
   (setq ccm-recenter-at-end-of-file nil)
 
