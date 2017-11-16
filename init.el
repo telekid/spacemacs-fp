@@ -333,8 +333,17 @@ you should place your code here."
   (with-eval-after-load 'org
     (setq org-directory "~/org")
     (setq org-default-notes-file (concat org-directory "/capture.org"))
-    (setq org-agenda-files (list org-default-notes-file))
-    (setq spaceline-org-clock-p t))
+    (setq spaceline-org-clock-p t)
+    (setq org-agenda-files (list org-default-notes-file "~/Dropbox/refuge/TODOs.org"))
+    (setq org-capture-templates
+          '(("t" "Todo" entry (file+headline org-default-notes-file "Inbox")
+             "* TODO %?\n  %i\n  %a")
+            ("g" "Daily goals" entry (file+olp+datetree "~/Dropbox/refuge/Journal.org")
+             "* Today, I'm going to:\n  - [ ] %?"
+             :tree-type week :empty-lines 1)
+            ("m" "Meeting notes" entry (file+olp+datetree "~/Dropbox/refuge/Journal.org")
+             "* Meeting: %^{Meeting Topic}\n  Date: %U\n  - %?"
+             :tree-type week :empty-lines-after 1))))
 
   ;; (with-eval-after-load 'org
   ;;   (setq plantuml-jar-path (concat org-directory "/plantuml.jar")))
