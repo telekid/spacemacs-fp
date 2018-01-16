@@ -53,6 +53,7 @@ values."
      git
      react
      html
+     parinfer
      ;; markdown
      (org :variables org-projectile-file "notes.org")
      clojure
