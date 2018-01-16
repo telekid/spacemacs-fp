@@ -336,6 +336,8 @@ you should place your code here."
     (setq org-directory "~/Dropbox/org")
     (setq org-want-todo-bindings t)
     (setq org-default-notes-file (concat org-directory "/capture.org"))
+    (setq org-todo-keywords
+          '((sequence "TODO" "|" "DONE" "CANCELED")))
     (setq spaceline-org-clock-p t)
     (setq org-agenda-files (list org-default-notes-file "~/Dropbox/refuge/TODOs.org"))
     (setq org-capture-templates
