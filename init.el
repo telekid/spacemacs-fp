@@ -341,12 +341,15 @@ you should place your code here."
     (setq spaceline-org-clock-p t)
     (setq org-agenda-files (list org-default-notes-file "~/Dropbox/refuge/TODOs.org"))
     (setq org-capture-templates
-          '(("t" "Todo" entry (file+headline org-default-notes-file "Inbox")
-             "* TODO %?\n  %i\n  %a")
-            ("g" "Daily goals" entry (file+olp+datetree "~/Dropbox/refuge/Journal.org")
+          '(("t" "Todo" entry (file org-default-notes-file)
+             "* TODO %?\n  Link: %a")
+            ("i" "Morning check-in" entry (file+olp+datetree "~/Dropbox/org/refuge/Journal.org")
              "* Today, I'm going to:\n  - [ ] %?"
-             :tree-type week :empty-lines 1)
-            ("m" "Meeting notes" entry (file+olp+datetree "~/Dropbox/refuge/Journal.org")
+             :tree-type week :empty-lines-after 1)
+            ("o" "Evening check-in" entry (file+olp+datetree "~/Dropbox/org/refuge/Journal.org")
+             "* What is the most important thing for me to accomplish tomorrow?\n  %?"
+             :tree-type week :empty-lines-after 1)
+            ("m" "Meeting notes" entry (file+olp+datetree "~/Dropbox/org/refuge/Journal.org")
              "* Meeting: %^{Meeting Topic}\n  Date: %U\n  - %?"
              :tree-type week :empty-lines-after 1))))
 
