@@ -334,6 +334,7 @@ you should place your code here."
 
   (with-eval-after-load 'org
     (setq org-directory "~/Dropbox/org")
+    (setq org-want-todo-bindings t)
     (setq org-default-notes-file (concat org-directory "/capture.org"))
     (setq spaceline-org-clock-p t)
     (setq org-agenda-files (list org-default-notes-file "~/Dropbox/refuge/TODOs.org"))
