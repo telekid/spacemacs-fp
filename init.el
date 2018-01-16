@@ -329,6 +329,7 @@ you should place your code here."
   (setq-default js2-basic-offset 2)
   (setq spaceline-org-clock-p t)
   (global-centered-cursor-mode +1)
+  (dumb-jump-mode)
   (setq ccm-recenter-at-end-of-file nil)
 
   (with-eval-after-load 'org
