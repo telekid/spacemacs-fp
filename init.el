@@ -339,7 +339,8 @@ you should place your code here."
     (setq org-todo-keywords
           '((sequence "TODO" "|" "DONE" "CANCELED")))
     (setq spaceline-org-clock-p t)
-    (setq org-agenda-files (list org-default-notes-file "~/Dropbox/refuge/TODOs.org"))
+    (setq org-agenda-files (list org-default-notes-file
+                                 (concat org-directory "/refuge/TODOs.org")))
     (setq org-capture-templates
           '(("t" "Todo" entry (file org-default-notes-file)
              "* TODO %?\n  Link: %a")
