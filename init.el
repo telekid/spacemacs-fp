@@ -362,4 +362,4 @@ you should place your code here."
       (setq org-refile-targets '((nil :maxlevel . 2)
                                  (org-agenda-files :maxlevel . 9)))
       (setq org-outline-path-complete-in-steps nil)
-      (setq org-refile-use-outline-path t))))
+      (setq org-refile-use-outline-path 'file))))
