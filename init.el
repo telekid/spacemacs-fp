@@ -353,11 +353,11 @@ you should place your code here."
     (require 'org-projectile)
     (require 'cl-lib)
     (let ((active-todo-files
-          (cl-remove-if-not
-           'stringp
-           (mapcar
-            (lambda (file) (when (file-exists-p file) file))
-            (org-projectile-todo-files)))))
+           (cl-remove-if-not
+            'stringp
+            (mapcar
+             (lambda (file) (when (file-exists-p file) file))
+             (org-projectile-todo-files)))))
       (setq org-agenda-files (append org-agenda-files active-todo-files))
       (setq org-refile-targets '((nil :maxlevel . 2)
                                  (org-agenda-files :maxlevel . 9)))
