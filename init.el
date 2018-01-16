@@ -332,7 +332,7 @@ you should place your code here."
   (setq ccm-recenter-at-end-of-file nil)
 
   (with-eval-after-load 'org
-    (setq org-directory "~/org")
+    (setq org-directory "~/Dropbox/org")
     (setq org-default-notes-file (concat org-directory "/capture.org"))
     (setq spaceline-org-clock-p t)
     (setq org-agenda-files (list org-default-notes-file "~/Dropbox/refuge/TODOs.org"))
