@@ -31,11 +31,6 @@ values."
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
-     (plantuml :variables
-               plantuml-jar-path "~/org/plantuml.jar")
-     haskell
-     rust
-     swift
      csv
      javascript
      markdown
@@ -53,10 +48,8 @@ values."
      git
      react
      html
-     parinfer
      ;; markdown
      (org :variables org-projectile-file "notes.org")
-     clojure
      (shell :variables
              shell-default-height 30
              shell-default-position 'bottom)
@@ -334,29 +327,16 @@ you should place your code here."
   (setq ccm-recenter-at-end-of-file nil)
 
   (with-eval-after-load 'org
-    (setq org-directory "~/Dropbox/org")
+    (setq org-directory "~/org")
     (setq org-want-todo-bindings t)
     (setq org-default-notes-file (concat org-directory "/capture.org"))
     (setq org-todo-keywords
           '((sequence "TODO" "|" "DONE" "CANCELED")))
     (setq spaceline-org-clock-p t)
-    (setq org-agenda-files (list org-default-notes-file
-                                 (concat org-directory "/refuge/TODOs.org")))
+    (setq org-agenda-files (list org-default-notes-file))
     (setq org-capture-templates
           '(("t" "Todo" entry (file org-default-notes-file)
-             "* TODO %?\n  Link: %a")
-            ("i" "Morning check-in" entry (file+olp+datetree "~/Dropbox/org/refuge/Journal.org")
-             "* Today, I'm going to:\n  - [ ] %?"
-             :tree-type week :empty-lines-after 1)
-            ("o" "Evening check-in" entry (file+olp+datetree "~/Dropbox/org/refuge/Journal.org")
-             "* What is the most important thing for me to accomplish tomorrow?\n  %?"
-             :tree-type week :empty-lines-after 1)
-            ("m" "Meeting notes" entry (file+olp+datetree "~/Dropbox/org/refuge/Journal.org")
-             "* Meeting: %^{Meeting Topic}\n  Date: %U\n  - %?"
-             :tree-type week :empty-lines-after 1))))
-
-  ;; (with-eval-after-load 'org
-  ;;   (setq plantuml-jar-path (concat org-directory "/plantuml.jar")))
+             "* TODO %?\n  Link: %a"))))
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
