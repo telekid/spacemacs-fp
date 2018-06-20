@@ -310,6 +310,7 @@ executes.
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
   (setq spacemacs-theme-org-height nil)
+  ;; Store custom settings in a separate file, rather than the bottom of this one.
   (setq custom-file "~/.emacs.d/.custom-settings"))
 
 (defun dotspacemacs/user-config ()
@@ -320,25 +321,47 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (push '("\\.js\\'" . react-mode) auto-mode-alist)
+
+  ;; For some reason, indenting is hard. This seems to work okay.
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
   (setq-default standard-indent 2)
+
+  ;; Show the org pomodoro time in spaceline.
   (setq spaceline-org-clock-p t)
+
+  ;; Always keep the cursor at the center of the screen.
   (global-centered-cursor-mode +1)
+
   (dumb-jump-mode)
+
   (setq ccm-recenter-at-end-of-file nil)
+
+  ;; Enable prettier in all web-mode buffers.
   (eval-after-load 'web-mode
     '(progn
        (add-hook 'web-mode-hook #'add-node-modules-path)
        (add-hook 'web-mode-hook #'prettier-js-mode)))
+
+  ;; My org configuration.
   (with-eval-after-load 'org
     (setq org-directory "~/org")
+
+    ;; Cycle todo status with t key
     (setq org-want-todo-bindings t)
+
     (setq org-default-notes-file (concat org-directory "/capture.org"))
+
     (setq org-todo-keywords
           '((sequence "TODO" "|" "DONE" "CANCELED")))
+
+    ;; For some reason, I'm setting this twice. Probably accidental.
     (setq spaceline-org-clock-p t)
+
+    ;; Optionally, add additional agenda files to the end of this list.
     (setq org-agenda-files (list org-default-notes-file))
+
+    ;; Add custom capture templates here.
     (setq org-capture-templates
           '(("t" "Todo" entry (file org-default-notes-file)
              "* TODO %?\n  Link: %a"))))
