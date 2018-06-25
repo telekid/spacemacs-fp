@@ -322,6 +322,15 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
   (push '("\\.js\\'" . react-mode) auto-mode-alist)
 
+  ;; Flexport keeps prettier config in package.json, and prettier-js mode
+  ;; doesn't seem to pick that up. For now, we'll manually keep the two
+  ;; synchronized.
+
+  (setq-default prettier-js-args '(
+    "--trailing-comma" "es5"
+    "--no-bracket-spacing" "true"
+  ))
+
   ;; For some reason, indenting is hard. This seems to work okay.
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
