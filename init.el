@@ -373,7 +373,10 @@ you should place your code here."
     ;; Add custom capture templates here.
     (setq org-capture-templates
           '(("t" "Todo" entry (file org-default-notes-file)
-             "* TODO %?\n  Link: %a"))))
+             "* TODO %?\n  Link: %a")
+            ;; TODO: Figure out how to construct file ~/org/ResumeItems.org from org-directory var
+            ("r" "Resume Item" entry (file+headline "~/org/ResumeItems.org" "Resume Items")
+             "* %t\n  %?"))))
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
