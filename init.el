@@ -64,7 +64,7 @@ values."
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(prettier-js add-node-modules-path)
+   dotspacemacs-additional-packages '(prettier-js add-node-modules-path company-flow)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -330,6 +330,13 @@ you should place your code here."
     "--trailing-comma" "es5"
     "--no-bracket-spacing" "true"
   ))
+
+  ;; Flow support. Hacky. To use, clone the Flowjs/spacemacs integration repo
+  ;; into ~/.spacemacs.d. (Confirm path matches that found below).
+  ;; https://github.com/tbinetruy/config/tree/master/spacemacs/flow
+
+  (load-file "~/.spacemacs.d/config/spacemacs/flow/flow.el")
+  (init-flowjs)
 
   ;; For some reason, indenting is hard. This seems to work okay.
   (setq-default js-indent-level 2)
