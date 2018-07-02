@@ -338,6 +338,8 @@ you should place your code here."
   (load-file "~/.spacemacs.d/config/spacemacs/flow/flow.el")
   (init-flowjs)
 
+  (setq-default ruby-insert-encoding-magic-comment nil)
+
   ;; For some reason, indenting is hard. This seems to work okay.
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
@@ -352,6 +354,12 @@ you should place your code here."
   (dumb-jump-mode)
 
   (setq ccm-recenter-at-end-of-file nil)
+
+  ;; Make all org-mode headers the same height
+  (setq-default spacemacs-theme-org-height nil)
+
+  ;; Speed up projectile by enabling caching
+  (setq projectile-enable-caching t)
 
   ;; Enable prettier in all web-mode buffers.
   (eval-after-load 'web-mode
