@@ -27,7 +27,7 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '()
+   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers")
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
@@ -340,6 +340,8 @@ you should place your code here."
 
   (setq-default ruby-insert-encoding-magic-comment nil)
 
+  (setq helm-ag-base-command "ag --nocolor --nogroup --ignore-dir node_modules --ignore-dir app/assets/javascripts/vendor")
+
   ;; For some reason, indenting is hard. This seems to work okay.
   (setq-default js-indent-level 2)
   (setq-default js2-basic-offset 2)
@@ -369,12 +371,15 @@ you should place your code here."
 
   ;; My org configuration.
   (with-eval-after-load 'org
-    (setq org-directory "~/org")
+    (setq org-directory "/Volumes/GoogleDrive/My Drive/org")
+
 
     ;; Cycle todo status with t key
     (setq org-want-todo-bindings t)
 
     (setq org-default-notes-file (concat org-directory "/capture.org"))
+
+    (setq org-archive-location (concat org-default-notes-file "_archive::* Archived Tasks"))
 
     (setq org-todo-keywords
           '((sequence "TODO" "|" "DONE" "CANCELED")))
@@ -387,23 +392,32 @@ you should place your code here."
 
     ;; Add custom capture templates here.
     (setq org-capture-templates
-          '(("t" "Todo" entry (file org-default-notes-file)
+          '(("t" "Todo" entry (file+headline org-default-notes-file "Inbox")
              "* TODO %?\n  Link: %a")
+            ("i" "Info" entry (file+headline org-default-notes-file "Inbox")
+             "* INFO %?\n  Link: %a")
             ;; TODO: Figure out how to construct file ~/org/ResumeItems.org from org-directory var
-            ("r" "Resume Item" entry (file+headline "~/org/ResumeItems.org" "Resume Items")
-             "* %t\n  %?"))))
+            ("r" "Resume Item" entry (file+headline "/Volumes/GoogleDrive/My Drive/org/ResumeItems.org" "Resume Items")
+             "* %t\n  %?")
+            ("p" "Create a new project" entry (file+headline "/Volumes/GoogleDrive/My Drive/org/capture.org" "Projects")
+             "* %^{What is the project's title?}\n\n" :immediate-finish t))))
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
     (require 'cl-lib)
-    (let ((active-todo-files
-           (cl-remove-if-not
-            'stringp
-            (mapcar
-             (lambda (file) (when (file-exists-p file) file))
-             (org-projectile-todo-files)))))
-      (setq org-agenda-files (append org-agenda-files active-todo-files))
-      (setq org-refile-targets '((nil :maxlevel . 2)
-                                 (org-agenda-files :maxlevel . 9)))
+    (let ((active-todo-files nil))
+      ;; NOTE: Temporarily had to comment out this function until
+      ;; this issue is resolved:
+      ;; https://github.com/syl20bnr/spacemacs/issues/9374
+      ;; (let ((active-todo-files
+      ;;        (cl-remove-if-not
+      ;;         'stringp
+      ;;         (mapcar
+      ;;          (lambda (file) (when (file-exists-p file) file))
+      ;;          (org-projectile-todo-files)))))
+      ;; (setq org-agenda-files (append org-agenda-files active-todo-files))
+      (setq org-agenda-files (append org-agenda-files))
+      (setq org-refile-targets '((nil :maxlevel . 9)
+                                 (org-agenda-files :maxlevel . 4)))
       (setq org-outline-path-complete-in-steps nil)
       (setq org-refile-use-outline-path 'file))))
