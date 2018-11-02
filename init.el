@@ -27,10 +27,11 @@ values."
    ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
-   dotspacemacs-configuration-layer-path '("~/.spacemacs.d/layers")
+   dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
    '(
+     nginx
      (ruby :variables ruby-version-manager 'rvm)
      csv
      javascript
@@ -49,6 +50,7 @@ values."
      git
      react
      html
+     chrome
      ;; markdown
      (org :variables org-projectile-file "notes.org")
      (shell :variables
@@ -59,12 +61,14 @@ values."
      version-control
      typescript
      evil-commentary
+
+     (plantuml :variables plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.9/libexec/plantuml.jar")
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(prettier-js add-node-modules-path company-flow)
+   dotspacemacs-additional-packages '(prettier-js add-node-modules-path company-flow edit-server)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -340,6 +344,8 @@ you should place your code here."
 
   (setq-default ruby-insert-encoding-magic-comment nil)
 
+
+
   (setq helm-ag-base-command "ag --nocolor --nogroup --ignore-dir node_modules --ignore-dir app/assets/javascripts/vendor")
 
   ;; For some reason, indenting is hard. This seems to work okay.
@@ -399,6 +405,8 @@ you should place your code here."
             ;; TODO: Figure out how to construct file ~/org/ResumeItems.org from org-directory var
             ("r" "Resume Item" entry (file+headline "/Volumes/GoogleDrive/My Drive/org/ResumeItems.org" "Resume Items")
              "* %t\n  %?")
+            ("m" "Meeting" entry (file+headline org-default-notes-file "Meetings")
+             "* %^{Meeting title} %^g\n  Date: %T\n  %?")
             ("p" "Create a new project" entry (file+headline "/Volumes/GoogleDrive/My Drive/org/capture.org" "Projects")
              "* %^{What is the project's title?}\n\n" :immediate-finish t))))
 
