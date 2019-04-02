@@ -375,6 +375,8 @@ you should place your code here."
        (add-hook 'web-mode-hook #'add-node-modules-path)
        (add-hook 'web-mode-hook #'prettier-js-mode)))
 
+  (setq rubocop-autocorrect-on-save t)
+
   ;; My org configuration.
   (with-eval-after-load 'org
     (setq org-directory "/Volumes/GoogleDrive/My Drive/org")
