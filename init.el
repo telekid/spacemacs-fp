@@ -64,7 +64,6 @@ This function should only modify configuration layer settings."
      version-control
      evil-commentary
      prettier
-
      (plantuml :variables plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.9/libexec/plantuml.jar")
      )
 
@@ -470,11 +469,11 @@ you should place your code here."
   (push '("\\.js\\'" . js-mode) auto-mode-alist)
   (push '("\\.jsx\\'" . js-mode) auto-mode-alist)
   (add-hook 'js-mode-hook 'lsp)
-  ;; (add-hook 'js-mode-hook #'lsp-mode)
 
   ;; Flexport keeps prettier config in package.json, and prettier-js mode
   ;; doesn't seem to pick that up. For now, we'll manually keep the two
   ;; synchronized.
+
 
   (setq-default prettier-js-args '(
     "--trailing-comma" "es5"
