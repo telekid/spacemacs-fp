@@ -461,6 +461,15 @@ This is the place where most of your configurations should be done. Unless it is
 explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
+
+  (spacemacs/set-leader-keys "or" 'rubocop-changes)
+
+  (defun rubocop-changes ()
+    (interactive)
+    (shell-command (format
+                    "cd %s && git diff --name-only --cached | tr '\n' ' ' | xargs rubocop -a"
+                    (projectile-project-root))))
+
   ;; Hack around symbol-is-void bug
   (defvar spacemacs-jump-handlers-js-mode nil)
 
@@ -507,12 +516,11 @@ you should place your code here."
   ;; Speed up projectile by enabling caching
   (setq projectile-enable-caching t)
 
-  (setq rubocop-autocorrect-on-save t)
-
   ;; My org configuration.
   (with-eval-after-load 'org
     (setq org-directory "/Volumes/GoogleDrive/My Drive/org")
 
+    (setq magit-prefer-remote-upstream t)
 
     ;; Cycle todo status with t key
     (setq org-want-todo-bindings t)
