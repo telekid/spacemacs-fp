@@ -20,7 +20,7 @@ This function should only modify configuration layer settings."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation 'unused
+   dotspacemacs-enable-lazy-installation nil
 
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
@@ -33,7 +33,20 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(lsp
+   '(syntax-checking
+     (auto-completion :variables
+                      auto-completion-enable-snippets-in-popup t
+                      ;; tab key to complete as much of common completion as possible
+                      auto-completion-tab-key-behavior 'cycle
+                      ;; automatic docstring display
+                      auto-completion-enable-help-tooltip t
+                      ;; enable the most frequent matches to show first
+                      auto-completion-enable-sort-by-usage t
+                      )
+     ;; lsp
+     deft
+     gnus
+     parinfer
      prettier
      rust
      nginx
@@ -57,14 +70,18 @@ This function should only modify configuration layer settings."
      ;; markdown
      (org :variables org-projectile-file "notes.org")
      (shell :variables
-             shell-default-height 30
-             shell-default-position 'bottom)
-      spell-checking
+            shell-default-height 30
+            shell-default-position 'bottom)
+     spell-checking
      syntax-checking
      version-control
      evil-commentary
      prettier
-     (plantuml :variables plantuml-jar-path "/usr/local/Cellar/plantuml/1.2018.9/libexec/plantuml.jar")
+     restclient
+     (clojure :variables clojure-enable-clj-refactor t)
+     github
+     sql
+     (plantuml :variables plantuml-jar-path "/usr/local/Cellar/plantuml/1.2019.8/libexec/plantuml.jar")
      )
 
    ;; List of additional packages that will be installed without being
@@ -74,7 +91,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(add-node-modules-path edit-server)
+   dotspacemacs-additional-packages '(edit-server add-node-modules-path)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -453,7 +470,7 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
-  (setq lsp-print-io t)
+  ;; (setq lsp-print-io t)
   (setq spacemacs-theme-org-height nil)
   ;; Store custom settings in a separate file, rather than the bottom of this one.
   (setq custom-file "~/.emacs.d/.custom-settings"))
@@ -472,7 +489,16 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  ;; (add-hook 'js-mode-hook 'lsp)
+  (add-hook 'js-mode-hook 'prettier-js-mode)
+
   (spacemacs/set-leader-keys "or" 'rubocop-changes)
+
+  (when (< emacs-major-version 27)
+    (defvar gnutls-algorithm-priority)
+    (defvar ghub-use-workaround-for-emacs-bug)
+    (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"
+          ghub-use-workaround-for-emacs-bug nil))
 
   (defun rubocop-changes ()
     (interactive)
@@ -483,25 +509,22 @@ before packages are loaded."
   ;; Hack around symbol-is-void bug
   (defvar spacemacs-jump-handlers-js-mode nil)
 
-  (setq-default lsp-auto-guess-root t)
+  ;; (setq-default lsp-auto-guess-root t)
 
   (push '("\\.js\\'" . js-mode) auto-mode-alist)
   (push '("\\.jsx\\'" . js-mode) auto-mode-alist)
-  (add-hook 'js-mode-hook 'lsp)
 
   ;; Flexport keeps prettier config in package.json, and prettier-js mode
   ;; doesn't seem to pick that up. For now, we'll manually keep the two
   ;; synchronized.
-
-
   (setq-default prettier-js-args '(
-    "--trailing-comma" "es5"
-    "--no-bracket-spacing" "true"
-  ))
+                                   "--trailing-comma" "es5"
+                                   "--no-bracket-spacing" "true"
+                                   ))
+
+  ;; (setq-default node-add-modules-path t)
 
   (setq-default ruby-insert-encoding-magic-comment nil)
-
-
 
   (setq helm-ag-base-command "ag --nocolor --nogroup --ignore-dir node_modules --ignore-dir app/assets/javascripts/vendor")
 
@@ -525,6 +548,9 @@ before packages are loaded."
 
   ;; Speed up projectile by enabling caching
   (setq projectile-enable-caching t)
+
+  ;; Enable prettier in all web-mode buffers.
+
 
   ;; My org configuration.
   (with-eval-after-load 'org
@@ -562,6 +588,29 @@ before packages are loaded."
             ("p" "Create a new project" entry (file+headline "/Volumes/GoogleDrive/My Drive/org/capture.org" "Projects")
              "* %^{What is the project's title?}\n\n" :immediate-finish t))))
 
+  (setq restclient-use-org t)
+
+  ;; Get email, and store in nnml
+  (setq gnus-secondary-select-methods
+        '(
+          (nnimap "gmail"
+                  (nnimap-address
+                   "imap.gmail.com")
+                  (nnimap-server-port 993)
+                  (nnimap-stream ssl))
+          ))
+
+  ;; Send email via Gmail:
+  (setq message-send-mail-function 'smtpmail-send-it
+        smtpmail-default-smtp-server "smtp.gmail.com")
+
+  ;; Archive outgoing email in Sent folder on imap.gmail.com:
+  (setq gnus-message-archive-method '(nnimap "imap.gmail.com")
+        gnus-message-archive-group "[Gmail]/Sent Mail")
+
+  ;; store email in ~/gmail directory
+  (setq nnml-directory "~/gmail")
+  (setq message-directory "~/gmail")
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
