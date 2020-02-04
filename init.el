@@ -20,21 +20,19 @@ This function should only modify configuration layer settings."
    ;; installation feature and you have to explicitly list a layer in the
    ;; variable `dotspacemacs-configuration-layers' to install it.
    ;; (default 'unused)
-   dotspacemacs-enable-lazy-installation nil
+   dotspacemacs-enable-lazy-installation 'unused
 
    ;; If non-nil then Spacemacs will ask for confirmation before installing
    ;; a layer lazily. (default t)
    dotspacemacs-ask-for-lazy-installation t
 
-   ;; If non-nil layers with lazy install support are lazy installed.
    ;; List of additional paths where to look for configuration layers.
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(syntax-checking
-     (auto-completion :variables
+   '((auto-completion :variables
                       auto-completion-enable-snippets-in-popup t
                       ;; tab key to complete as much of common completion as possible
                       auto-completion-tab-key-behavior 'cycle
@@ -43,11 +41,16 @@ This function should only modify configuration layer settings."
                       ;; enable the most frequent matches to show first
                       auto-completion-enable-sort-by-usage t
                       )
-     ;; lsp
+     lsp
+     (javascript :variables
+                 javascript-backend 'lsp
+                 node-add-modules-path t
+                 javascript-fmt-tool 'prettier
+                 javascript-fmt-on-save t
+                 js2-mode-show-strict-warnings nil
+                 js2-mode-show-arse-errors nil)
      deft
-     gnus
      parinfer
-     prettier
      rust
      nginx
      (ruby :variables ruby-version-manager 'rvm)
@@ -55,11 +58,6 @@ This function should only modify configuration layer settings."
      markdown
      python
      yaml
-     ;; ----------------------------------------------------------------
-     ;; Example of useful layers you may want to use right away.
-     ;; Uncomment some layer names and press `SPC f e R' (Vim style) or
-     ;; `M-m f e R' (Emacs style) to install them.
-     ;; ----------------------------------------------------------------
      helm
      auto-completion
      better-defaults
@@ -76,7 +74,6 @@ This function should only modify configuration layer settings."
      syntax-checking
      version-control
      evil-commentary
-     prettier
      restclient
      (clojure :variables
               clojure-enable-clj-refactor t
@@ -85,7 +82,6 @@ This function should only modify configuration layer settings."
      sql
      (plantuml :variables plantuml-jar-path "/usr/local/bin/plantuml")
      )
-
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -125,10 +121,10 @@ It should only modify the values of Spacemacs settings."
    ;; (default nil)
    dotspacemacs-enable-emacs-pdumper nil
 
-   ;; File path pointing to emacs 27.1 executable compiled with support
-   ;; for the portable dumper (this is currently the branch pdumper).
-   ;; (default "emacs-27.0.50")
-   dotspacemacs-emacs-pdumper-executable-file "emacs-27.0.50"
+   ;; Name of executable file pointing to emacs 27+. This executable must be
+   ;; in your PATH.
+   ;; (default "emacs")
+   dotspacemacs-emacs-pdumper-executable-file "emacs"
 
    ;; Name of the Spacemacs dump file. This is the file will be created by the
    ;; portable dumper in the cache directory under dumps sub-directory.
@@ -184,9 +180,6 @@ It should only modify the values of Spacemacs settings."
    ;; (default 'vim)
    dotspacemacs-editing-style 'vim
 
-   ;; If non-nil output loading progress in `*Messages*' buffer. (default nil)
-   dotspacemacs-verbose-loading nil
-
    ;; Specify the startup banner. Default value is `official', it displays
    ;; the official spacemacs logo. An integer value is the index of text
    ;; banner, `random' chooses a random text banner in `core/banners'
@@ -206,6 +199,11 @@ It should only modify the values of Spacemacs settings."
 
    ;; True if the home buffer should respond to resize events. (default t)
    dotspacemacs-startup-buffer-responsive t
+
+   ;; Default major mode for a new empty buffer. Possible values are mode
+   ;; names such as `text-mode'; and `nil' to use Fundamental mode.
+   ;; (default `text-mode')
+   dotspacemacs-new-empty-buffer-major-mode 'text-mode
 
    ;; Default major mode of the scratch buffer (default `text-mode')
    dotspacemacs-scratch-mode 'text-mode
@@ -280,7 +278,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil then the last auto saved layouts are resumed automatically upon
    ;; start. (default nil)
-   dotspacemacs-auto-resume-layouts t
+   dotspacemacs-auto-resume-layouts nil
 
    ;; If non-nil, auto-generate layout name when creating new layouts. Only has
    ;; effect when using the "jump to layout by number" commands. (default nil)
@@ -329,7 +327,7 @@ It should only modify the values of Spacemacs settings."
 
    ;; If non-nil the frame is fullscreen when Emacs starts up. (default nil)
    ;; (Emacs 24.4+ only)
-   dotspacemacs-fullscreen-at-startup t
+   dotspacemacs-fullscreen-at-startup nil
 
    ;; If non-nil `spacemacs/toggle-fullscreen' will not use native fullscreen.
    ;; Use to disable fullscreen animations in OSX. (default nil)
@@ -339,6 +337,11 @@ It should only modify the values of Spacemacs settings."
    ;; Takes effect only if `dotspacemacs-fullscreen-at-startup' is nil.
    ;; (default nil) (Emacs 24.4+ only)
    dotspacemacs-maximized-at-startup nil
+
+   ;; If non-nil the frame is undecorated when Emacs starts up. Combine this
+   ;; variable with `dotspacemacs-maximized-at-startup' in OSX to obtain
+   ;; borderless fullscreen. (default nil)
+   dotspacemacs-undecorated-at-startup nil
 
    ;; A value from the range (0..100), in increasing opacity, which describes
    ;; the transparency level of a frame when it's active or selected.
@@ -367,10 +370,14 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smooth-scrolling t
 
    ;; Control line numbers activation.
-   ;; If set to `t' or `relative' line numbers are turned on in all `prog-mode' and
-   ;; `text-mode' derivatives. If set to `relative', line numbers are relative.
+   ;; If set to `t', `relative' or `visual' then line numbers are enabled in all
+   ;; `prog-mode' and `text-mode' derivatives. If set to `relative', line
+   ;; numbers are relative. If set to `visual', line numbers are also relative,
+   ;; but lines are only visual lines are counted. For example, folded lines
+   ;; will not be counted and wrapped lines are counted as multiple lines.
    ;; This variable can also be set to a property list for finer control:
    ;; '(:relative nil
+   ;;   :visual nil
    ;;   :disabled-for-modes dired-mode
    ;;                       doc-view-mode
    ;;                       markdown-mode
@@ -378,8 +385,9 @@ It should only modify the values of Spacemacs settings."
    ;;                       pdf-view-mode
    ;;                       text-mode
    ;;   :size-limit-kb 1000)
+   ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers t
+   dotspacemacs-line-numbers nil
 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
@@ -390,7 +398,7 @@ It should only modify the values of Spacemacs settings."
    dotspacemacs-smartparens-strict-mode nil
 
    ;; If non-nil pressing the closing parenthesis `)' key in insert mode passes
-   ;; over any automatically added closing parenthesis, bracket, quote, etc…
+   ;; over any automatically added closing parenthesis, bracket, quote, etc...
    ;; This can be temporary disabled by pressing `C-q' before `)'. (default nil)
    dotspacemacs-smart-closing-parenthesis nil
 
@@ -482,8 +490,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump.")
-  
+dump."
+  )
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -493,7 +501,9 @@ Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
   ;; (add-hook 'js-mode-hook 'lsp)
-  (add-hook 'js-mode-hook 'prettier-js-mode)
+
+  ;; Hack around symbol-is-void bug
+  (defvar spacemacs-jump-handlers-js-mode nil)
 
   (spacemacs/set-leader-keys "or" 'rubocop-changes)
 
@@ -509,13 +519,12 @@ before packages are loaded."
                     "cd %s && git diff --name-only --cached | tr '\n' ' ' | xargs rubocop -a"
                     (projectile-project-root))))
 
-  ;; Hack around symbol-is-void bug
-  (defvar spacemacs-jump-handlers-js-mode nil)
 
-  ;; (setq-default lsp-auto-guess-root t)
+  (setq-default lsp-auto-guess-root t)
 
   (push '("\\.js\\'" . js-mode) auto-mode-alist)
   (push '("\\.jsx\\'" . js-mode) auto-mode-alist)
+  (add-hook 'js-mode-hook 'lsp)
 
   ;; Flexport keeps prettier config in package.json, and prettier-js mode
   ;; doesn't seem to pick that up. For now, we'll manually keep the two
@@ -532,8 +541,8 @@ before packages are loaded."
   (setq helm-ag-base-command "ag --nocolor --nogroup --ignore-dir node_modules --ignore-dir app/assets/javascripts/vendor")
 
   ;; For some reason, indenting is hard. This seems to work okay.
-  (setq-default js-indent-level 2)
-  (setq-default js2-basic-offset 2)
+  ;; (setq-default js-indent-level 2)
+  ;; (setq-default js2-basic-offset 2)
   (setq-default standard-indent 2)
 
   ;; Show the org pomodoro time in spaceline.
