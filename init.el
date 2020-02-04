@@ -78,11 +78,14 @@ This function should only modify configuration layer settings."
      evil-commentary
      prettier
      restclient
-     (clojure :variables clojure-enable-clj-refactor t)
+     (clojure :variables
+              clojure-enable-clj-refactor t
+              clojure-enable-linters 'clj-kondo)
      github
      sql
-     (plantuml :variables plantuml-jar-path "/usr/local/Cellar/plantuml/1.2019.8/libexec/plantuml.jar")
+     (plantuml :variables plantuml-jar-path "/usr/local/bin/plantuml")
      )
+
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -91,7 +94,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(edit-server add-node-modules-path)
+   dotspacemacs-additional-packages '(edit-server add-node-modules-path graphql-mode)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -479,8 +482,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
+  
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -519,8 +522,8 @@ before packages are loaded."
   ;; synchronized.
   (setq-default prettier-js-args '(
                                    "--trailing-comma" "es5"
-                                   "--no-bracket-spacing" "true"
-                                   ))
+                                   "--no-bracket-spacing" "true"))
+  
 
   ;; (setq-default node-add-modules-path t)
 
@@ -549,7 +552,8 @@ before packages are loaded."
   ;; Speed up projectile by enabling caching
   (setq projectile-enable-caching t)
 
-  ;; Enable prettier in all web-mode buffers.
+  ;; Enable moving beyond end of line
+  (setq evil-move-beyond-eol t)
 
 
   ;; My org configuration.
@@ -597,8 +601,8 @@ before packages are loaded."
                   (nnimap-address
                    "imap.gmail.com")
                   (nnimap-server-port 993)
-                  (nnimap-stream ssl))
-          ))
+                  (nnimap-stream ssl))))
+  
 
   ;; Send email via Gmail:
   (setq message-send-mail-function 'smtpmail-send-it
@@ -611,6 +615,25 @@ before packages are loaded."
   ;; store email in ~/gmail directory
   (setq nnml-directory "~/gmail")
   (setq message-directory "~/gmail")
+
+  ;; This was an attempt to get projectile to change the theme on a per-project basis
+  ;; (with-eval-after-load 'projectile
+  ;;   (defun projectile-load-settings (file)
+  ;;     "Load project elisp settings file if they are found in active project root
+  ;; directory, or if in the case of undefined root directory, file is
+  ;; otherwise path resolvable."
+  ;;     (interactive "senter elisp filename (in project root): ")
+  ;;     (let
+  ;;         ((p (concat (projectile-project-root) file)))
+  ;;       (if (file-exists-p p)
+  ;;           (progn
+  ;;             (load p)
+  ;;             (message "%s" (concat "loaded project settings from: " file))
+  ;;             nil)
+  ;;         nil)))
+
+  ;;   (add-hook 'projectile-switch-project-hook
+  ;;             (lambda () (projectile-load-settings "settings.el"))))
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
