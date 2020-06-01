@@ -54,7 +54,7 @@ This function should only modify configuration layer settings."
      rust
      nginx
      (ruby :variables ruby-version-manager 'rvm)
-     csv
+     ;; csv
      markdown
      python
      yaml
@@ -90,7 +90,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(edit-server add-node-modules-path graphql-mode)
+   dotspacemacs-additional-packages '(edit-server add-node-modules-path graphql-mode flow-js2-mode inf-clojure)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -387,7 +387,7 @@ It should only modify the values of Spacemacs settings."
    ;;   :size-limit-kb 1000)
    ;; When used in a plist, `visual' takes precedence over `relative'.
    ;; (default nil)
-   dotspacemacs-line-numbers nil
+   dotspacemacs-line-numbers t
 
    ;; Code folding method. Possible values are `evil' and `origami'.
    ;; (default 'evil)
@@ -524,7 +524,9 @@ before packages are loaded."
 
   (push '("\\.js\\'" . js-mode) auto-mode-alist)
   (push '("\\.jsx\\'" . js-mode) auto-mode-alist)
-  (add-hook 'js-mode-hook 'lsp)
+  ;; (add-hook 'js-mode-hook 'lsp)
+  (add-hook 'js2-mode-hook #'flow-js2-mode)
+
 
   ;; Flexport keeps prettier config in package.json, and prettier-js mode
   ;; doesn't seem to pick that up. For now, we'll manually keep the two
@@ -532,7 +534,6 @@ before packages are loaded."
   (setq-default prettier-js-args '(
                                    "--trailing-comma" "es5"
                                    "--no-bracket-spacing" "true"))
-  
 
   ;; (setq-default node-add-modules-path t)
 
