@@ -500,6 +500,7 @@ configuration.
 Put your configuration code here, except for variables that should be set
 before packages are loaded."
 
+  (setq-default lsp-clients-flow-server "/Users/jakezerrer/flexport/node_modules/.bin/flow")
   ;; (add-hook 'js-mode-hook 'lsp)
 
   ;; Hack around symbol-is-void bug
@@ -524,8 +525,9 @@ before packages are loaded."
 
   (push '("\\.js\\'" . js-mode) auto-mode-alist)
   (push '("\\.jsx\\'" . js-mode) auto-mode-alist)
-  ;; (add-hook 'js-mode-hook 'lsp)
-  (add-hook 'js2-mode-hook #'flow-js2-mode)
+  (add-hook 'js-mode-hook 'lsp)
+  (add-hook 'js-mode-hook 'prettier-js-mode)
+  ;; (add-hook 'js2-mode-hook #'flow-js2-mode)
 
 
   ;; Flexport keeps prettier config in package.json, and prettier-js mode
@@ -612,7 +614,8 @@ before packages are loaded."
                    "imap.gmail.com")
                   (nnimap-server-port 993)
                   (nnimap-stream ssl))))
-  
+
+  (setq cider-show-error-buffer nil)
 
   ;; Send email via Gmail:
   (setq message-send-mail-function 'smtpmail-send-it
@@ -644,6 +647,23 @@ before packages are loaded."
 
   ;;   (add-hook 'projectile-switch-project-hook
   ;;             (lambda () (projectile-load-settings "settings.el"))))
+
+  (defun toggle-camelcase-underscores ()
+    "Toggle between camelcase and underscore notation for the symbol at point."
+    (interactive)
+    (save-excursion
+      (let* ((bounds (bounds-of-thing-at-point 'symbol))
+             (start (car bounds))
+             (end (cdr bounds))
+             (currently-using-underscores-p (progn (goto-char start)
+                                                   (re-search-forward "_" end t))))
+        (if currently-using-underscores-p
+            (progn
+              (upcase-initials-region start end)
+              (replace-string "_" "" nil start end)
+              (downcase-region start (1+ start)))
+          (replace-regexp "\\([A-Z]\\)" "_\\1" nil (1+ start) end)
+          (downcase-region start (cdr (bounds-of-thing-at-point 'symbol)))))))
 
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
