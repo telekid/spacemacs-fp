@@ -32,56 +32,51 @@ This function should only modify configuration layer settings."
 
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '((auto-completion :variables
-                      auto-completion-enable-snippets-in-popup t
-                      ;; tab key to complete as much of common completion as possible
-                      auto-completion-tab-key-behavior 'cycle
-                      ;; automatic docstring display
-                      auto-completion-enable-help-tooltip t
-                      ;; enable the most frequent matches to show first
-                      auto-completion-enable-sort-by-usage t
-                      )
-     lsp
-     (javascript :variables
-                 javascript-backend 'lsp
-                 node-add-modules-path t
-                 javascript-fmt-tool 'prettier
-                 javascript-fmt-on-save t
-                 js2-mode-show-strict-warnings nil
-                 js2-mode-show-arse-errors nil)
-     deft
-     parinfer
-     rust
-     nginx
-     (ruby :variables ruby-version-manager 'rvm)
-     ;; csv
-     markdown
-     python
-     yaml
-     helm
-     auto-completion
-     better-defaults
-     emacs-lisp
-     git
-     html
-     chrome
-     ;; markdown
-     (org :variables org-projectile-file "notes.org")
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom)
-     spell-checking
-     syntax-checking
-     version-control
-     evil-commentary
-     restclient
-     (clojure :variables
-              clojure-enable-clj-refactor t
-              clojure-enable-linters 'clj-kondo)
-     github
-     sql
-     (plantuml :variables plantuml-jar-path "/usr/local/bin/plantuml")
-     )
+   '
+   (ruby
+    (auto-completion :variables
+                     auto-completion-enable-snippets-in-popup t
+                     ;; tab key to complete as much of common completion as possible
+                     auto-completion-tab-key-behavior 'cycle
+                     ;; automatic docstring display
+                     auto-completion-enable-help-tooltip t
+                     ;; enable the most frequent matches to show first
+                     auto-completion-enable-sort-by-usage t)
+    scheme
+    lsp
+    ;; dap
+    (javascript :variables
+                javascript-backend 'lsp
+                node-add-modules-path t
+                javascript-fmt-tool 'prettier
+                javascript-fmt-on-save t
+                js2-mode-show-strict-warnings nil
+                js2-mode-show-arse-errors nil)
+    deft
+    parinfer
+    (ruby :variables ruby-version-manager 'rvm)
+    ;; csv
+    markdown
+    python
+    yaml
+    helm
+    auto-completion
+    better-defaults
+    emacs-lisp
+    git
+    html
+    ;; markdown
+    (org :variables org-projectile-file "notes.org")
+    spell-checking
+    syntax-checking
+    version-control
+    evil-commentary
+    restclient
+    (clojure :variables
+             clojure-enable-clj-refactor t
+             clojure-enable-linters 'clj-kondo)
+    sql
+    (plantuml :variables plantuml-jar-path "/usr/local/bin/plantuml"))
 
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
@@ -90,7 +85,7 @@ This function should only modify configuration layer settings."
    ;; To use a local version of a package, use the `:location' property:
    ;; '(your-package :location "~/path/to/your-package/")
    ;; Also include the dependencies as they will not be resolved automatically.
-   dotspacemacs-additional-packages '(edit-server add-node-modules-path graphql-mode flow-js2-mode inf-clojure)
+   dotspacemacs-additional-packages '(edit-server add-node-modules-path graphql-mode flow-js2-mode inf-clojure color-identifiers-mode helm-rg)
 
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
@@ -215,8 +210,8 @@ It should only modify the values of Spacemacs settings."
    ;; List of themes, the first of the list is loaded when spacemacs starts.
    ;; Press `SPC T n' to cycle to the next theme in the list (works great
    ;; with 2 themes variants, one dark and one light)
-   dotspacemacs-themes '(spacemacs-dark
-                         spacemacs-light)
+   dotspacemacs-themes '(doom-palenight
+                         eziam-light)
 
    ;; Set the theme for the Spaceline. Supported themes are `spacemacs',
    ;; `all-the-icons', `custom', `doom', `vim-powerline' and `vanilla'. The
@@ -481,6 +476,9 @@ configuration.
 It is mostly for variables that should be set before packages are loaded.
 If you are unsure, try setting them in `dotspacemacs/user-config' first."
 
+  ;; https://stackoverflow.com/a/42038174/419043
+  (setq dired-use-ls-dired nil)
+
   ;; (setq lsp-print-io t)
   (setq spacemacs-theme-org-height nil)
   ;; Store custom settings in a separate file, rather than the bottom of this one.
@@ -490,8 +488,8 @@ If you are unsure, try setting them in `dotspacemacs/user-config' first."
   "Library to load while dumping.
 This function is called only while dumping Spacemacs configuration. You can
 `require' or `load' the libraries of your choice that will be included in the
-dump."
-  )
+dump.")
+  
 
 (defun dotspacemacs/user-config ()
   "Configuration for user code:
@@ -535,7 +533,7 @@ before packages are loaded."
   ;; synchronized.
   (setq-default prettier-js-args '(
                                    "--trailing-comma" "es5"
-                                   "--no-bracket-spacing" "true"))
+                                   "--bracket-spacing" "false"))
 
   ;; (setq-default node-add-modules-path t)
 
@@ -629,6 +627,13 @@ before packages are loaded."
   (setq nnml-directory "~/gmail")
   (setq message-directory "~/gmail")
 
+  (with-eval-after-load 'lsp-mode
+    (lsp-register-client
+     (make-lsp-client :new-connection (lsp-stdio-connection '("srb" "tc" "--lsp" "--enable-all-beta-lsp-features"))
+                      :major-modes '(ruby-mode)
+                      :server-id 'srb-tc-ls)))
+
+
   ;; This was an attempt to get projectile to change the theme on a per-project basis
   ;; (with-eval-after-load 'projectile
   ;;   (defun projectile-load-settings (file)
@@ -668,17 +673,13 @@ before packages are loaded."
   (with-eval-after-load 'org-agenda
     (require 'org-projectile)
     (require 'cl-lib)
-    (let ((active-todo-files nil))
-      ;; NOTE: Temporarily had to comment out this function until
-      ;; this issue is resolved:
-      ;; https://github.com/syl20bnr/spacemacs/issues/9374
-      ;; (let ((active-todo-files
-      ;;        (cl-remove-if-not
-      ;;         'stringp
-      ;;         (mapcar
-      ;;          (lambda (file) (when (file-exists-p file) file))
-      ;;          (org-projectile-todo-files)))))
-      ;; (setq org-agenda-files (append org-agenda-files active-todo-files))
+    (let ((active-todo-files
+           (cl-remove-if-not
+            'stringp
+            (mapcar
+             (lambda (file) (when (file-exists-p file) file))
+             (org-projectile-todo-files)))))
+      (setq org-agenda-files (append org-agenda-files active-todo-files))
       (setq org-agenda-files (append org-agenda-files))
       (setq org-refile-targets '((nil :maxlevel . 9)
                                  (org-agenda-files :maxlevel . 4)))
